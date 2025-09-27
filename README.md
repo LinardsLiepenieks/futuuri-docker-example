@@ -103,7 +103,7 @@ Wait 2-3 minutes for all services to initialize.
 
    - URL: http://localhost:8000
    - Username: `demo`
-   - Password: `demoPass123!`
+   - Password: `myDashboardPassword123!`
    - **First step**: Verify the `weather_data` table exists
 
 2. **n8n Workflow Engine** ⚙️
