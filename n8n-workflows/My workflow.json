@@ -1,0 +1,119 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://kong:8000/rest/v1/weather_data",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"apikey\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzU4ODM0MDAwLCJleHAiOjE5MTY2MDA0MDB9.vB3r7hw1VgndoJiaMBZEnHsqVLiikW24kbd6QbW2w80\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "6e672efd-5950-4b18-9919-44d5bde8f037",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and format weather data\nconst weather = $input.first().json;\n\nreturn [{\n  json: {\n    city: weather.name,\n    temperature: weather.main.temp,\n    description: weather.weather[0].description,\n    humidity: weather.main.humidity,\n    pressure: weather.main.pressure\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "7593ef4e-d959-49b3-b1af-d32fc9096e8f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=3f930b0b0b70a648a6e7c7e71bad0cca&units=metric",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d229da9b-6ae4-421c-a12d-683ed1621abc",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "bfff6b92-cbe9-44a4-b7ef-c2c1b62be5c4",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2470811c-38f8-4575-be7d-696bef64face",
+  "meta": {
+    "instanceId": "d212995c89c298f4ad18c5a1be457e71c1dca28ccec8fe6681f082f61051a407"
+  },
+  "id": "coLOVmAdvSd6Ljxu",
+  "tags": []
+}
